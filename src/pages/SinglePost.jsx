@@ -19,6 +19,8 @@ export const SinglePost = () => {
 
     useEffect(() => {
 
+        window.scrollTo(0, 0);
+
         const getUser =  async () => {
             let url = `https://jsonplaceholder.typicode.com/users/${userId}`;
 
@@ -57,9 +59,9 @@ export const SinglePost = () => {
 
     return (
         <div className="p-5 sm:px-8 max-w-7xl mx-auto">
-            <div className="w-full h-[80vh] pt-8" >
+            <div className="w-full h-[33vh] sm:h-[80vh] pt-8" >
 
-                <img className="w-full h-full rounded-lg" src={`https://loremflickr.com/320/240?random=${id}`} alt="img" />
+                <img className="w-full h-full rounded-lg object-cover object-center" src={`https://loremflickr.com/320/240?random=${id}`} alt="img" />
             
             </div>
 
@@ -102,7 +104,7 @@ export const SinglePost = () => {
                                     </div>
                                     <div>
                                         <p className="text-white">{capitalizeFirstLetter(comment.name)}</p>
-                                        <p className="text-ftsecondary text-sm">{comment.email}</p>
+                                        <p className="text-slate-500 text-xs mt-2">{comment.email}</p>
                                         <p className="mt-2">
                                             {comment.body}
                                         </p>

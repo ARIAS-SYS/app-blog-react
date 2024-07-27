@@ -18,6 +18,8 @@ export const PostsPages = () => {
     const [activeUser, setActiveUser] = useState(null);
     const pageSize = 12;  //post por pagina
 
+    
+
     useEffect(() => {
 
         const getPosts =  async () => {
