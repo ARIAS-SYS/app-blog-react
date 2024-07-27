@@ -4,12 +4,16 @@ import { Pagination } from "./Pagination";
 import { UserSelection } from "./UserSelection";
 import { FaArrowUp    } from "react-icons/fa6"
 import { Link } from "react-router-dom"
+import { Search } from "./Search";
 
 export const PostsPages = () => {
+
+    //setear los hooks useState
 
     const [posts, setPosts] = useState([]);
     const [users, setUsers] = useState([]);
     const [postUser, setPostUser] = useState([]);
+    const [ search, setSearch ] = useState("");
 
     // navegacion
 
@@ -18,34 +22,31 @@ export const PostsPages = () => {
     const [activeUser, setActiveUser] = useState(null);
     const pageSize = 12;  //post por pagina
 
-    
+    //función para traer los datos de la API
+
+    const getPosts =  async () => {
+        let url = `https://jsonplaceholder.typicode.com/posts?page=${actualPage}&limit=${pageSize}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        setPosts(data);
+    }
+
+    const getUsers =  async () => {
+        let url = 'https://jsonplaceholder.typicode.com/users';
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        setUsers(data);
+    }
 
     useEffect(() => {
-
-        const getPosts =  async () => {
-            let url = `https://jsonplaceholder.typicode.com/posts?page=${actualPage}&limit=${pageSize}`;
-
-            const response = await fetch(url);
-            const data = await response.json();
-
-            setPosts(data);
-        }
-
-        const getUsers =  async () => {
-            let url = 'https://jsonplaceholder.typicode.com/users';
-
-            const response = await fetch(url);
-            const data = await response.json();
-
-            setUsers(data);
-        }
-
         getPosts();
         getUsers();
 
-    }, [actualPage, pageSize, selectedUser])
-
-    // cuando users y post cambian
+    }, [actualPage, pageSize, selectedUser]);
 
     useEffect(() => {
         const combinedData = posts.map(post => {
@@ -57,6 +58,25 @@ export const PostsPages = () => {
         
     }, [posts, users]);
 
+    //función de búsqueda
+
+    const searcher = (e) => {
+        setSearch(e.target.value)   
+    }
+
+    //metodo de filtrado  
+    let results = []
+    if(!search)
+        {
+            results = postUser
+        }else{
+                results = postUser.filter( (dato) =>
+                dato.title.toLowerCase().includes(search.toLocaleLowerCase()) || dato.body.toLowerCase().includes(search.toLocaleLowerCase())
+        )
+    } 
+
+    // otras funciones
+    
     const handledPageChange = (pageNumber) => {
         setActualPage(pageNumber);
     }
@@ -72,9 +92,10 @@ export const PostsPages = () => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
+    // esto solo es para mostrar el primer post para que se vea mejor 
+
     const newPostUser = postUser[0];
     const newUser = newPostUser ? newPostUser.user : ''
-    console.log('aqui')
     console.log(newPostUser)
 
     return (
@@ -127,19 +148,31 @@ export const PostsPages = () => {
 
             </div>
 
-            {/* category */}
-            <div>
-                <UserSelection onSelectUser={handleUserChange} selectedUser={selectedUser} activeUser={activeUser} users={users} />
+            <div className="mb-8">
+
+                {/* search */}
+
+                <div className="my-8">
+                    <Search search={search} searcher={searcher} />
+                </div>
+
+                {/* category */}
+
+                <div>
+                    <UserSelection onSelectUser={handleUserChange} selectedUser={selectedUser} activeUser={activeUser} users={users} />
+                </div>
+                
+
             </div>
 
             {/* postCards */}
             <div>
-                <PostCards posts={postUser} actualPage={actualPage} selectedUser={selectedUser}  pageSize={pageSize} />
+                <PostCards posts={results} actualPage={actualPage} selectedUser={selectedUser}  pageSize={pageSize} />
             </div>
 
             {/* pagination */}
             <div>
-                <Pagination onPageChange={handledPageChange} actualPage={actualPage} posts={postUser} pageSize={pageSize} />
+                <Pagination onPageChange={handledPageChange} actualPage={actualPage} posts={results} pageSize={pageSize} />
             </div>
         </>
     )
