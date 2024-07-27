@@ -45,10 +45,10 @@ export const PostsPages = () => {
     useEffect(() => {
         getPosts();
         getUsers();
-
     }, [actualPage, pageSize, selectedUser]);
 
     useEffect(() => {
+
         const combinedData = posts.map(post => {
             const user = users.find(user => user.id === post.userId);
             return { ...post, user };
@@ -64,7 +64,7 @@ export const PostsPages = () => {
         setSearch(e.target.value)   
     }
 
-    //metodo de filtrado  
+    //metodo de filtrado titulo o contenido 
     let results = []
     if(!search)
         {
@@ -76,32 +76,37 @@ export const PostsPages = () => {
     } 
 
     // otras funciones
-    
+
+    // cambiar de pagina   
     const handledPageChange = (pageNumber) => {
+
         setActualPage(pageNumber);
+
     }
 
+    // cambiar de usuario seleccionado
     const handleUserChange = (user) => {
+
         setSelectedUser(user);
         setActualPage(1);
         setActiveUser(user);
+
     }
 
+
+    // funcion para poner la primera latra en mayuscula
     const capitalizeFirstLetter = (string) => {
         if (!string) return '';
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
     // esto solo es para mostrar el primer post para que se vea mejor 
-
     const newPostUser = postUser[0];
     const newUser = newPostUser ? newPostUser.user : ''
-    console.log(newPostUser)
 
     return (
         <>
             <div className="md:flex hidden banner w-full h-[80vh] rounded-lg  items-end p-10">
-
                 <div className="flex gap-8">
                     <div>
                         <h3 className="text-white text-xl font-bold mb-4">
@@ -119,11 +124,9 @@ export const PostsPages = () => {
                                 <p className="text-white">Escrito por:</p>
                                 <div className="flex gap-2 h-10 mt-4 items-center">
                                     <img className=" w-8 h-8 object-cover object-center rounded-full" src="https://www.ripponmedicalservices.co.uk/images/easyblog_articles/89/b2ap3_large_ee72093c-3c01-433a-8d25-701cca06c975.jpg" alt="userImg" />
-
                                     <p className="text-ftsecondary">
                                         {   
                                             newUser ? newUser.name : 'Loading...'
-
                                         }
                                     </p>
                                 </div>
@@ -136,27 +139,23 @@ export const PostsPages = () => {
                             </div>
                         </div>
                     </div>
-
                     <div>
                         <Link to={`/posts/1`}>
                             <FaArrowUp className="text-white transform rotate-45 text-xl cursor-pointer"/>
                         </Link>
                     </div>
-
                 </div>
-
-
             </div>
 
             <div className="mb-8">
 
-                {/* search */}
+                {/* busqueda */}
 
                 <div className="my-8">
                     <Search search={search} searcher={searcher} />
                 </div>
 
-                {/* category */}
+                {/* usuarios */}
 
                 <div>
                     <UserSelection onSelectUser={handleUserChange} selectedUser={selectedUser} activeUser={activeUser} users={users} />
@@ -165,14 +164,14 @@ export const PostsPages = () => {
 
             </div>
 
-            {/* postCards */}
+            {/* seccion publicaciones */}
             <div>
                 <PostCards posts={results} actualPage={actualPage} selectedUser={selectedUser}  pageSize={pageSize} />
             </div>
 
-            {/* pagination */}
+            {/* seccion paginacion */}
             <div>
-                <Pagination onPageChange={handledPageChange} actualPage={actualPage} posts={results} pageSize={pageSize} />
+                <Pagination posts={results} onPageChange={handledPageChange} actualPage={actualPage} selectedUser={selectedUser} pageSize={pageSize} />
             </div>
         </>
     )

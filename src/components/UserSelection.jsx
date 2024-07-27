@@ -1,9 +1,9 @@
 
 export const UserSelection = ({ onSelectUser, activeUser, users }) => {
 
+    // obtenemos todos los nombres de los usuarios
     const newUsers = users.map((user) => user.name)
     
-
     return (
         <>
             <h4 className="text-ftsecondary mt-4">Filtrar por usuario</h4>
